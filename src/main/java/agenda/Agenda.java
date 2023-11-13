@@ -41,12 +41,15 @@ public class Agenda {
      * @return les événements qui ont le même titre
      */
     public List<Event> findByTitle(String title) {
-        List<Event> eventList = new ArrayList<>();
-        for (Event e: events) {
-            if (e.getTitle().equals(title)) eventList.add(e);
+        List<Event> eventsByTitle = new ArrayList<>();
+        for(Event e : events){
+            if(e.getTitle().equals(title)){
+                eventsByTitle.add(e);
+            }
         }
-        return eventList;
+        return eventsByTitle;
     }
+
 
     /**
      * Déterminer s’il y a de la place dans l'agenda pour un événement
@@ -54,15 +57,17 @@ public class Agenda {
      * @return vrai s’il y a de la place dans l'agenda pour cet événement
      */
     public boolean isFreeFor(Event e) {
+        boolean response = true;
         LocalDateTime eventStart = e.getStart();
-        LocalDateTime eventFin = eventStart.plusMinutes(e.getDuration().toMinutes());
-        for (Event eventInAgenda: events) {
-            LocalDateTime eventInAgendaStart = eventInAgenda.getStart();
-            LocalDateTime eventInAgendaFin = eventInAgendaStart.plusMinutes(e.getDuration().toMinutes());
-            if (eventInAgendaStart.isAfter(eventStart) && eventInAgendaStart.isBefore(eventFin)
-                || eventInAgendaFin.isAfter(eventStart) && eventInAgendaFin.isBefore(eventFin)
-                || eventInAgendaStart.isBefore(eventStart) && eventInAgendaFin.isAfter(eventFin)) return false;
-        }
+        LocalDateTime eventStop = e.getStart().plusMinutes(e.getDuration().toMinutes());
+        for(Event eAgenda : events){
+            LocalDateTime eventAgendaStart = eAgenda.getStart();
+            LocalDateTime eventAgendaStop = eAgenda.getStart().plusMinutes(eAgenda.getDuration().toMinutes());
+            if(!(eventAgendaStart.isBefore(eventStart) && eventAgendaStop.isBefore(eventStart)
+                    || eventAgendaStart.isAfter(eventStart) && eventAgendaStop.isAfter(eventStart))){
+                return false;
+                }
+            }
         return true;
-    }
+        }
 }
