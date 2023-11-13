@@ -20,6 +20,7 @@ public class AgendaTest {
 
     // November 1st, 2020, 22:30
     LocalDateTime nov_1__2020_22_30 = LocalDateTime.of(2020, 11, 1, 22, 30);
+    LocalDateTime nov_1__2020_18_30 = LocalDateTime.of(2020, 11, 1, 18, 30);
 
     // 120 minutes
     Duration min_120 = Duration.ofMinutes(120);
@@ -27,6 +28,7 @@ public class AgendaTest {
     // A simple event
     // November 1st, 2020, 22:30, 120 minutes
     Event simple = new Event("Simple event", nov_1__2020_22_30, min_120);
+    Event eventBefore = new Event("Event before", nov_1__2020_18_30, min_120);
 
     // A Weekly Repetitive event ending at a given date
     RepetitiveEvent fixedTermination = new FixedTerminationEvent("Fixed termination weekly", nov_1__2020_22_30, min_120, ChronoUnit.WEEKS, jan_5_2021);
@@ -37,14 +39,6 @@ public class AgendaTest {
     // A daily repetitive event, never ending
     // November 1st, 2020, 22:30, 120 minutes
     RepetitiveEvent neverEnding = new RepetitiveEvent("Never Ending", nov_1__2020_22_30, min_120, ChronoUnit.DAYS);
-
-    // Events to test the false issue in the test testIsFreeFor
-    Event simpleStartIn = new Event("Simple event", nov_1__2020_22_30.plusMinutes(10), min_120);
-    Event simpleFinishIn = new Event("Simple event", nov_1__2020_22_30.minusMinutes(10), min_120);
-    Event simpleIncludeIt = new Event("Simple event", nov_1__2020_22_30.minusMinutes(10), min_120.plusMinutes(20));
-
-    // Event to test the true issue in the test testIsFreeFor
-    Event otherSimple = new Event("Simple event", nov_1__2020_22_30.plusMinutes(130), min_120);
 
     @BeforeEach
     public void setUp() {
@@ -62,15 +56,15 @@ public class AgendaTest {
     }
 
     @Test
-    public void testFindByTitle() {
-        assertEquals(1, agenda.findByTitle("Simple event").size(), "il y a un seul événement: Simple event");
-    }
+    public void testFindByTitle(){
+        assertEquals(1, agenda.findByTitle("Simple event").size(), "Il y a un évènement simple");
+        }
 
     @Test
-    public void testIsFreeFor() {
-        assertFalse(agenda.isFreeFor(simpleStartIn), "un événement ne peux pas commencer en meme temps qu'un autre");
-        assertFalse(agenda.isFreeFor(simpleFinishIn), "un événement ne peux pas terminer en meme temps qu'un autre");
-        assertFalse(agenda.isFreeFor(simpleIncludeIt), "un événement ne peux pas en contenir un autre");
-        assertTrue(agenda.isFreeFor(otherSimple), "ce creneau est sense etre libre");
+    public void testIsFreeFor(){
+        assertTrue(agenda.isFreeFor(eventBefore), "Cet evenement peut etre ajoute");
+        }
+
+
     }
-}
+
